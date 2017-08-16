@@ -1,0 +1,84 @@
+<div id='content-panel'>
+    <div class='modal' id='login-modal' tabindex='-1' aria-hidden='true'>
+        <div class='modal-dialog'>
+            <div class='modal-content RDCO-theme'>
+                <div class='modal-header' align='center'><img class='img-square' id='img_logo' src='res/img/logo.png'>
+                    <h3><strong>RDCO Dog Control Center Login</strong></h3></div>
+                <form id='login-form' method='POST'>
+                    <div class='modal-body form-group'>
+                        <div id='div-login-msg'>
+                            <div id='icon-login-msg' class='glyphicon glyphicon-chevron-right'></div>
+                            <span id='text-login-msg'>Type your username and password.</span></div>
+                        <input name='login_username' class='form-control' type='text' placeholder='Username' required>
+                        <input name='login_password' class='form-control' type='password' placeholder='Password'
+                               required>
+                    </div>
+                    <div class='modal-footer form-group'>
+                        <button type='submit' class='btn btn-primary btn-lg btn-block' value='submit'>Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#login-modal').modal('show').on('hide.bs.modal', function (e) {
+            e.preventDefault();
+        });
+
+        $("#login-form").submit(function (e) {
+            let msg = "", code = "";
+            $.ajax({
+                type: "POST",
+                url: "ajax/index/sign_in.php",
+                data: $("#login-form").serialize(),
+                success: function (data) {
+                    msg = JSON.parse(data).message;
+                    code = JSON.parse(data).code;
+
+                    if (code == 1000) { //error
+                        msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "glyphicon-remove", msg);
+                    } else {
+                        msgChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "glyphicon-ok", msg);
+                        window.location.reload();
+                    }
+                }
+            });
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+        });
+
+        var $msgAnimateTime = 150;
+        var $msgShowTime = 2000;
+
+        /**
+         *
+         * @param $divTag
+         * @param $iconTag
+         * @param $textTag
+         * @param $divClass
+         * @param $iconClass
+         * @param $msgText
+         */
+        function msgChange($divTag, $iconTag, $textTag, $iconClass, $msgText) {
+            var $msgOld = $divTag.text();
+            $textTag.fadeOut($msgAnimateTime, function () {
+                $(this).text($msgText).fadeIn($msgAnimateTime);
+                $iconTag.removeClass("glyphicon-chevron-right");
+                $iconTag.addClass($iconClass);
+            });
+
+            setTimeout(function () {
+                //msgFade($textTag, $msgOld);
+                $textTag.fadeOut($msgAnimateTime, function () {
+                    $(this).text($msgOld).fadeIn($msgAnimateTime);
+                    $iconTag.addClass("glyphicon-chevron-right");
+                    $iconTag.removeClass($iconClass);
+                });
+
+            }, $msgShowTime);
+        }
+    });
+</script>

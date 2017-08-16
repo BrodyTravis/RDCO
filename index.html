@@ -1,0 +1,91 @@
+<?php
+include "ConnectionObjects/ConnectionLink.php";
+try{
+    $connection_link = new ConnectionLink();
+    if ($connection_link->authenticate_cookie()) {
+        $username = $connection_link->get_username();
+        $init_script = "<script src='js/index.js'></script>";
+        $category = "home";
+    } else {
+        $category = "login";
+    }
+} catch (Exception $ex){
+    $category = "config";
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RDCO Mobile Center</title>
+
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel='stylesheet' href='css/master.css'>
+
+    <script src="js/jquery-3.2.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <?php echo $init_script; ?>
+
+</head>
+
+<body>
+<input type="hidden" value=<?php echo $category; ?>  id="category">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid navbar-border">
+        <div class="navbar-header">
+            <span class="glyphicon glyphicon-menu-hamburger navbar-toggle" data-toggle="collapse"
+                  data-target="#RDCO-navbar-collapse"><span class="sr-only">Toggle Navbar</span></span>
+            <a class="navbar-brand" id="brand_link" href="#home">RDCO
+                <small> Mobile Center</small>
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="RDCO-navbar-collapse">
+            <ul id="navigation_links" class="nav navbar-nav" style=" display: none ">
+                <li id='nav_home' class="active"><a href='#home'><strong>HOME</strong></a></li>
+                <li id='nav_people'><a href='#people'><strong>PEOPLE</strong></a></li>
+                <li id='nav_animals'><a href='#animals'><strong>ANIMALS</strong></a></li>
+                <li id='nav_licenses'><a href='#licenses'><strong>LICENSES</strong></a></li>
+            </ul>
+
+
+            <ul class="nav navbar-nav navbar-right" style=" display: none " id="user_panel">
+                <li class="dropdown sub-dropdown" id="user_dropdown">
+                    <a href="#" class="dropdown-toggle RDCO-dropdown" data-toggle="dropdown"><span
+                                class="glyphicon glyphicon-user"></span><span class="caret"></span></a>
+
+                    <ul class="dropdown-menu RDCO-theme">
+                        <li class="text-center text-capitalize text-primary">
+                            <strong id="user_welcome"></strong><br/>
+                            <?php echo $username; ?>
+                        </li>
+                        <li class="divider"></li>
+                        <li id="database_config"><a href="#config" id="nav_config">Configure<span
+                                        class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                        <li class="divider"></li>
+                        <li id="user_panel"><a href="#sign_out" id="nav_sign_out">Sign out<span
+                                        class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<!---END-HEADER-->
+<!--START-CONTENT-->
+<div id="content_frame">
+    <script>
+        $.get('ajax/index/category_handler.php', {category: $('#category').val()}, function (response) {
+            $('#content_frame').html($(response));
+        });
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<div class='panel panel-default offset-md-4' id='content-panel'>
+    <div class='panel-heading text-center'>
+        <h2>
+            <strong class="text-uppercase">RDCO Database Information Configuration (ADVANCED)</strong><br/>
+            <small class="text-danger">WARNING: This page should only be accessed by an RDCO IT professional</small>
+        </h2>
+    </div>
+    <div class='panel-body'>
+        <div id="successbanner" class='alert alert-success' style="display:none;">
+            <button type="button" class="close">×</button>
+            <strong>Success!</strong> Database info saved
+        </div>
+        <div id="errorbanner" class='alert alert-warning' style="display:none;">
+            <button type="button" class="close">×</button>
+            <strong>ERROR!</strong> Please check all provided information
+        </div>
+
+        <form id='config-form' method='POST'>
+            <div class='form-group'>
+                <label for="database">Database:</label>
+                <select class="form-control" name="database" id="database" required>
+                    <option value="both">Both</option>
+                    <option value="Shelter_Pro_Test">Shelter Pro</option>
+                    <option value="vadim-local">Vadim</option>
+                </select><br/>
+                <label for="server">Server:</label>
+                <input type="text" class="form-control" name="server" id="server" placeholder="Server IP..." required><br/>
+                <label for="username">Database Username:</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Username..." required><br/>
+                <label for="password">Database Password:</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password..." required><br/>
+                <label for="passphrase">Encryption Passphrase:</label>
+                <input type="password" class="form-control" name="passphrase" id="passphrase" placeholder="Secret Passphrase..." required>
+                <small id="passphrase_help" class="form-text text-muted">Please email <a
+                        href="mailto:me@brodytravis.com"
+                        target="">me@brodytravis.com</a> if
+                    lost.
+                </small><br/>
+                <button name="submit" type="submit" value="submit" id="save_button" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#config-form").submit(function (e) {
+            $.ajax({
+                data: $("#config-form").serialize(),
+                url: 'ajax/index/database_info.php',
+                success: function (data) {
+                    var bannertype = "success";
+                    if (data == 1000) {
+                        bannertype = "error";
+                    }
+                    $("#" + bannertype + "banner").slideDown(1000).delay(2000).slideUp(1000);
+
+                    if (data != 1000) {
+                        window.location.reload();
+                    }
+                }
+            });
+            e.preventDefault();
+        });
+
+        $('.alert .close').on('click', function (e) {
+            $(this).parent().hide();
+        });
+    });
+
+</script>

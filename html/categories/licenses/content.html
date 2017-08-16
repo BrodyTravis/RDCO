@@ -1,0 +1,56 @@
+<div class='panel panel-default offset-md-4' id='vadim_quick_search_panel'>
+    <div class='panel-heading text-center'>
+        <h2 class="text-uppercase">
+            <strong>License Lookup</strong>
+        </h2>
+        <form id="search_form" class="navbar-form-alt">
+            <div class='input-group'>
+                <div class='input-group-btn search-panel'>
+                    <button type='button' class='btn btn-default dropdown-toggle' data-toggle='dropdown'>
+                        <span id='search_concept'>All</span> <span class='caret'></span>
+                    </button>
+                    <ul class='dropdown-menu RDCO-theme' role='menu'>
+                        <li><a href='#all'>All</a></li>
+                        <li><a href='#tag_num'>Tag Number</a></li>
+                        <li><a href='#pet_name'>Pet Name</a></li>
+                        <li><a href='#breed'>Breed</a></li>
+                        <li><a href='#ower_name'>Owner Name</a></li>
+                        <li><a href='#address'>Address</a></li>
+                    </ul>
+                </div>
+                <input type='hidden' name='filter' id='filter' value='all'>
+                <input type='text' class='form-control' name='search_param' id="search_param"
+                       placeholder='Search term...'>
+                <span class='input-group-btn'>
+                    <button class='btn btn-default' id="search_button"><span
+                            class="glyphicon glyphicon-search"></span></button>
+                    </span>
+            </div>
+        </form>
+    </div>
+    <div class='panel-body' id='search_results_content'>
+
+        <div id="search_results_placeholder">Please search to continue...</div>
+    </div>
+
+</div>
+<script>
+    $('#search_bar').removeClass('hide');
+
+    $('#search_button').click(function (e) {
+        e.preventDefault();
+        if ($('#search_param').val().length > 1) {
+            $('#search_results_placeholder').load('html/categories/table_category_base.html', $('#search_form').serialize());
+        }
+    });
+
+    $('.search-panel .dropdown-menu').find('a').click(function (e) {
+        e.preventDefault();
+        var param = $(this).attr("href").replace("#", "");
+        var concept = $(this).text();
+        $('.search-panel span#search_concept').text(concept);
+        $('.input-group #filter').val(param);
+    });
+
+
+</script>
